@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using RESTfulAPI.Services;
 
 namespace RESTfulAPI
 {
@@ -26,6 +27,14 @@ namespace RESTfulAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            bool useFake = Convert.ToBoolean(Configuration["Translator:UseFake"]);
+            if (useFake)
+            {
+                services.AddSingleton<ITranslator, FakeTranslator>();
+            } else
+            {
+                services.AddSingleton<ITranslator, TranslateService>();
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
